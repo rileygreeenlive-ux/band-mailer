@@ -1,0 +1,58 @@
+// Asset paths are relative; config/index.js makes them absolute.
+// Swap in hosted https URLs for real sends.
+module.exports = {
+  bmlg: {
+    name: "BMLG Records",
+    logoUrl: "/assets/logo.svg",
+    bannerUrl: "/assets/banner.svg",
+    bannerAlt: "BMLG Records",
+    bannerBg: "#0d0d0d",
+    bannerText: 'BIG MACHINE<br><span style="font-size:13px;letter-spacing:6px;">LABEL GROUP</span>',
+    pageBg: "#e9e4d8",
+    cardBg: "#fdf8ec",
+    ink: "#1a1a1a",
+    muted: "#6b6459",
+    fontStack: "Georgia,'Palatino Linotype','Times New Roman',serif",
+    fromName: "BMLG Records",
+    replyTo: "",
+    address: "Big Machine Label Group, Nashville, TN",
+    defaults: {
+      preheader: "Registration details for Riley Green access — BMLG Records",
+      title: "Registration for Access to Mr. Riley Green via BMLG Records",
+      greeting: "Dear Sir/Ma,",
+      paragraphs: [
+        "I hope this message finds you well. This is the BMLG record label for Mr. Riley Green, and I’m writing to inform you about a crucial step required for your potential involvement with BMLG Records and your access to Mr. Riley Green. To proceed with registration and to ensure that your details are properly submitted for review, there is a registration fee of $200. This fee will provide you with the necessary form to complete the registration process and gain further access to Mr. Green’s management team and any potential opportunities that may arise.",
+        "Here are the payment methods: Cashapp, PayPal, Apple Pay and you can make your payment with BTC for your own convenience.",
+        "Once the fee is processed, you’ll be provided with a comprehensive registration form, along with specific instructions for completing the necessary steps to move forward.",
+        "Please don’t hesitate to reach out if you have any questions or need additional information. We look forward to assisting you through this process and supporting you as you connect with the opportunities ahead.",
+      ],
+      signatureName: "[management]",
+      organization: "BMLG Records",
+    },
+  },
+
+  demo: {
+    name: "Example Band",
+    logoUrl: "/assets/logo.svg",
+    bannerUrl: "/assets/banner.svg",
+    bannerAlt: "Example Band",
+    bannerBg: "#111",
+    bannerText: 'EXAMPLE<br><span style="font-size:13px;letter-spacing:6px;">BAND</span>',
+    pageBg: "#e9e4d8",
+    cardBg: "#fdf8ec",
+    ink: "#1a1a1a",
+    muted: "#6b6459",
+    fontStack: "Georgia,'Palatino Linotype','Times New Roman',serif",
+    fromName: "Example Band",
+    replyTo: "",
+    address: "Example Band, 1 Sample St",
+    defaults: {
+      preheader: "New single out now",
+      title: "Our new single has landed",
+      greeting: "Hey,",
+      paragraphs: ["Thanks for supporting the band — the new single is out everywhere today."],
+      signatureName: "Example Band",
+      organization: "",
+    },
+  },
+};

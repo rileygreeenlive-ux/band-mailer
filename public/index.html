@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mail Composer</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <h1>Mail Composer</h1>
+  <select id="brand" aria-label="Brand"></select>
+</header>
+<main>
+  <form id="f" autocomplete="off">
+    <label for="to">To</label>
+    <input id="to" required placeholder="fan@example.com">
+    <div class="row">
+      <div><label for="cc">Cc</label><input id="cc" placeholder="optional"></div>
+      <div><label for="bcc">Bcc</label><input id="bcc" placeholder="optional"></div>
+    </div>
+    <label for="subject">Subject</label>
+    <input id="subject" required>
+    <label for="preheader">Preheader</label>
+    <input id="preheader">
+    <label for="title">Title</label>
+    <input id="title">
+    <label for="greeting">Greeting</label>
+    <input id="greeting">
+    <label for="paragraphs">Body <span class="hint">(blank line = new paragraph)</span></label>
+    <textarea id="paragraphs" rows="12"></textarea>
+    <div class="row">
+      <div><label for="signatureName">Sign-off name</label><input id="signatureName"></div>
+      <div><label for="organization">Organization</label><input id="organization"></div>
+    </div>
+    <div class="actions">
+      <button type="submit" id="send">Send</button>
+      <button type="button" id="reset">Reset</button>
+    </div>
+    <div id="status" role="status" aria-live="polite"></div>
+  </form>
+  <iframe id="pv" title="Preview"></iframe>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
