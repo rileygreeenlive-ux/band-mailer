@@ -7,7 +7,6 @@ const headers = require("../mail/headers");
 const send = require("../mail/transport");
 const log = require("../lib/log");
 const { parseList, buildContent } = require("../middleware/validate");
-const net = require("net");
 
 const router = express.Router();
 const asyncRoute = (handler) => (req, res, next) =>
@@ -41,29 +40,17 @@ router.get("/diag", async (_req, res) => {
   out.smtpPort = process.env.SMTP_PORT || "";
   out.passLen = (process.env.SMTP_PASS || "").length;
   out.smtpKeys = Object.keys(process.env).filter((key) => /SMTP/i.test(key));
+  out.resendKeyLen = (process.env.RESEND_KEY || "").length;
 
-  await new Promise((resolve) => {
-    const smtpPort = Number(process.env.SMTP_PORT || 465);
-    const socket = smtpPort === 465
-      ? net.connect(smtpPort, "smtp.gmail.com")
-      : net.connect(smtpPort, process.env.SMTP_HOST || "smtp.gmail.com");
-    const timer = setTimeout(() => {
-      out.tcp = "TIMEOUT";
-      socket.destroy();
-      resolve();
-    }, 10_000);
-    socket.once("connect", () => {
-      clearTimeout(timer);
-      out.tcp = "TCP OK";
-      socket.destroy();
-      resolve();
+  try {
+    const response = await fetch("https://api.resend.com/domains", {
+      headers: { Authorization: `Bearer ${process.env.RESEND_KEY || ""}` },
+      signal: AbortSignal.timeout(10_000),
     });
-    socket.once("error", (e) => {
-      clearTimeout(timer);
-      out.tcp = "ERR " + e.code;
-      resolve();
-    });
-  });
+    out.resend = response.status;
+  } catch (e) {
+    out.resend = `THROW ${e.message}`;
+  }
   res.set("Cache-Control", "no-store");
   res.json(out);
 });
