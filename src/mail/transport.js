@@ -98,7 +98,12 @@ async function viaResend(message) {
   return { id: json.id, provider: "resend" };
 }
 
-const SENDERS = { smtp: viaSmtp, postmark: viaPostmark, resend: viaResend };
+const SENDERS = {
+  smtp: viaSmtp,
+  postmark: viaPostmark,
+  resend: viaResend,
+  "gmail-api": (message) => require("./gmail-api").send(message),
+};
 
 module.exports = async function send(message) {
   const sender = SENDERS[PROVIDER];

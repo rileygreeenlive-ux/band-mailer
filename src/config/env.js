@@ -3,6 +3,7 @@ const PROVIDER_KEYS = {
   smtp: ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS"],
   postmark: ["POSTMARK_TOKEN"],
   resend: ["RESEND_KEY"],
+  "gmail-api": ["GMAIL_CLIENT_ID", "GMAIL_CLIENT_SECRET", "GMAIL_REFRESH_TOKEN"],
 };
 
 function die(msg) {
