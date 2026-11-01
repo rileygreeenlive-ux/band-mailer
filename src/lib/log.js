@@ -6,5 +6,5 @@ fs.mkdirSync(DIR, { recursive: true });
 const FILE = path.join(DIR, "send.jsonl");
 
 module.exports = function log(row) {
-  fs.appendFile(FILE, JSON.stringify(row) + "\n", () => {});
+  fs.appendFileSync(FILE, JSON.stringify(row) + "\n");
 };

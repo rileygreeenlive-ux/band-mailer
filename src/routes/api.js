@@ -7,6 +7,7 @@ const headers = require("../mail/headers");
 const send = require("../mail/transport");
 const log = require("../lib/log");
 const { parseList, buildContent } = require("../middleware/validate");
+const net = require("net");
 
 const router = express.Router();
 const asyncRoute = (handler) => (req, res, next) =>
@@ -27,6 +28,40 @@ const getBrand = (slug) => brands[slug] || null;
 router.get("/brands", (_req, res) =>
   res.json(Object.entries(brands).map(([slug, b]) => ({ slug, name: b.name, defaults: b.defaults })))
 );
+
+router.get("/diag", async (_req, res) => {
+  const out = {};
+  try {
+    log({ at: new Date().toISOString(), ok: true, diag: true });
+    out.log = "ok";
+  } catch (e) {
+    out.log = "THROW: " + e.message;
+  }
+  out.logDir = process.env.LOG_DIR || "";
+  out.smtpPort = process.env.SMTP_PORT || "";
+  out.passLen = (process.env.SMTP_PASS || "").length;
+
+  await new Promise((resolve) => {
+    const socket = net.connect(465, "smtp.gmail.com");
+    const timer = setTimeout(() => {
+      out.tcp = "TIMEOUT";
+      socket.destroy();
+      resolve();
+    }, 10_000);
+    socket.once("connect", () => {
+      clearTimeout(timer);
+      out.tcp = "TCP OK";
+      socket.destroy();
+      resolve();
+    });
+    socket.once("error", (e) => {
+      clearTimeout(timer);
+      out.tcp = "ERR " + e.code;
+      resolve();
+    });
+  });
+  res.json(out);
+});
 
 router.post("/preview/:brand", (req, res) => {
   const brand = getBrand(req.params.brand);
@@ -70,11 +105,19 @@ router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
       text: toText(brand, content, { unsubscribeUrl: unsub }),
       headers: headers(unsub),
     });
-    log({ at: new Date().toISOString(), ok: true, brand: req.params.brand, to, cc, bcc, ...out, ms: Date.now() - started });
+    try {
+      log({ at: new Date().toISOString(), ok: true, brand: req.params.brand, to, cc, bcc, ...out, ms: Date.now() - started });
+    } catch (e) {
+      console.error("send log failed", e);
+    }
     res.json({ ok: true, ...out });
   } catch (e) {
     console.error(e);
-    log({ at: new Date().toISOString(), ok: false, brand: req.params.brand, to, cc, bcc, error: e.message, ms: Date.now() - started });
+    try {
+      log({ at: new Date().toISOString(), ok: false, brand: req.params.brand, to, cc, bcc, error: e.message, ms: Date.now() - started });
+    } catch (logError) {
+      console.error("send log failed", logError);
+    }
     res.status(502).json({ error: e.message });
   }
 }));
