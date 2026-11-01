@@ -75,7 +75,7 @@ async function viaResend(message) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.RESEND_KEY}`,
+      Authorization: `Bearer ${process.env.RESEND_KEY || ""}`,
     },
     body: JSON.stringify({
       from: `"${message.fromName}" <${message.from}>`,
