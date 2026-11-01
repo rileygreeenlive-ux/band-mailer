@@ -1,8 +1,8 @@
-﻿const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
 const PROVIDER = (process.env.MAIL_PROVIDER || "smtp").toLowerCase();
 const RETRYABLE = new Set([408, 425, 429, 500, 502, 503, 504]);
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let smtp = null;
 function smtpClient() {
@@ -24,18 +24,23 @@ function smtpClient() {
   return smtp;
 }
 
-async function viaSmtp(m) {
+async function viaSmtp(message) {
   const info = await smtpClient().sendMail({
-    from: `"${m.fromName}" <${m.from}>`,
-    to: m.to, cc: m.cc, bcc: m.bcc,
-    replyTo: m.replyTo || undefined,
-    subject: m.subject, text: m.text, html: m.html, headers: m.headers,
+    from: `"${message.fromName}" <${message.from}>`,
+    to: message.to,
+    cc: message.cc,
+    bcc: message.bcc,
+    replyTo: message.replyTo || undefined,
+    subject: message.subject,
+    text: message.text,
+    html: message.html,
+    headers: message.headers,
   });
   return { id: info.messageId, provider: "smtp" };
 }
 
-async function viaPostmark(m) {
-  const r = await fetch("https://api.postmarkapp.com/email", {
+async function viaPostmark(message) {
+  const response = await fetch("https://api.postmarkapp.com/email", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,65 +48,72 @@ async function viaPostmark(m) {
       "X-Postmark-Server-Token": process.env.POSTMARK_TOKEN,
     },
     body: JSON.stringify({
-      From: `"${m.fromName}" <${m.from}>`,
-      To: (m.to || []).join(","),
-      Cc: (m.cc || []).join(",") || undefined,
-      Bcc: (m.bcc || []).join(",") || undefined,
-      ReplyTo: m.replyTo || undefined,
-      Subject: m.subject, TextBody: m.text, HtmlBody: m.html,
-      Headers: Object.entries(m.headers || {}).map(([Name, Value]) => ({ Name, Value })),
+      From: `"${message.fromName}" <${message.from}>`,
+      To: (message.to || []).join(","),
+      Cc: (message.cc || []).join(",") || undefined,
+      Bcc: (message.bcc || []).join(",") || undefined,
+      ReplyTo: message.replyTo || undefined,
+      Subject: message.subject,
+      TextBody: message.text,
+      HtmlBody: message.html,
+      Headers: Object.entries(message.headers || {}).map(([Name, Value]) => ({ Name, Value })),
       MessageStream: process.env.POSTMARK_STREAM || "outbound",
       TrackOpens: false,
     }),
   });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    const e = new Error(j.Message || `postmark ${r.status}`);
-    e.status = r.status;
-    throw e;
+  const json = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(json.Message || `postmark ${response.status}`);
+    error.status = response.status;
+    throw error;
   }
-  return { id: j.MessageID, provider: "postmark" };
+  return { id: json.MessageID, provider: "postmark" };
 }
 
-async function viaResend(m) {
-  const r = await fetch("https://api.resend.com/emails", {
+async function viaResend(message) {
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.RESEND_KEY}`,
     },
     body: JSON.stringify({
-      from: `"${m.fromName}" <${m.from}>`,
-      to: m.to, cc: m.cc, bcc: m.bcc,
-      reply_to: m.replyTo || undefined,
-      subject: m.subject, text: m.text, html: m.html, headers: m.headers,
+      from: `"${message.fromName}" <${message.from}>`,
+      to: message.to,
+      cc: message.cc,
+      bcc: message.bcc,
+      reply_to: message.replyTo || undefined,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+      headers: message.headers,
     }),
   });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    const e = new Error(j.message || `resend ${r.status}`);
-    e.status = r.status;
-    throw e;
+  const json = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(json.message || `resend ${response.status}`);
+    error.status = response.status;
+    throw error;
   }
-  return { id: j.id, provider: "resend" };
+  return { id: json.id, provider: "resend" };
 }
 
 const SENDERS = { smtp: viaSmtp, postmark: viaPostmark, resend: viaResend };
 
 module.exports = async function send(message) {
-  const fn = SENDERS[PROVIDER];
-  if (!fn) throw new Error(`unknown MAIL_PROVIDER: ${PROVIDER}`);
-  let lastErr;
+  const sender = SENDERS[PROVIDER];
+  if (!sender) throw new Error(`unknown MAIL_PROVIDER: ${PROVIDER}`);
+  let lastError;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      return await fn(message);
-    } catch (e) {
-      lastErr = e;
-      if ((e.status && !RETRYABLE.has(e.status)) || attempt === 2) break;
+      return await sender(message);
+    } catch (error) {
+      lastError = error;
+      if ((error.status && !RETRYABLE.has(error.status)) || attempt === 2) break;
       await sleep(400 * 2 ** attempt);
     }
   }
-  throw lastErr;
+  throw lastError;
 };
 
 module.exports.provider = PROVIDER;

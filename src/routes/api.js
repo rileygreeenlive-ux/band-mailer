@@ -42,7 +42,10 @@ router.get("/diag", async (_req, res) => {
   out.passLen = (process.env.SMTP_PASS || "").length;
 
   await new Promise((resolve) => {
-    const socket = net.connect(465, "smtp.gmail.com");
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
+    const socket = smtpPort === 465
+      ? net.connect(smtpPort, "smtp.gmail.com")
+      : net.connect(smtpPort, process.env.SMTP_HOST || "smtp.gmail.com");
     const timer = setTimeout(() => {
       out.tcp = "TIMEOUT";
       socket.destroy();
