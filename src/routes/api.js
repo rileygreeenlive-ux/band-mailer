@@ -68,6 +68,7 @@ router.post("/send/:brand", limiter, async (req, res) => {
     log({ at: new Date().toISOString(), ok: true, brand: req.params.brand, to, cc, bcc, ...out, ms: Date.now() - started });
     res.json({ ok: true, ...out });
   } catch (e) {
+    console.error(e);
     log({ at: new Date().toISOString(), ok: false, brand: req.params.brand, to, cc, bcc, error: e.message, ms: Date.now() - started });
     res.status(502).json({ error: e.message });
   }
