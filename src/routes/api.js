@@ -9,6 +9,11 @@ const log = require("../lib/log");
 const { parseList, buildContent } = require("../middleware/validate");
 
 const router = express.Router();
+const asyncRoute = (handler) => (req, res, next) =>
+  Promise.resolve(handler(req, res, next)).catch((e) => {
+    console.error(e);
+    res.status(502).json({ error: e.message });
+  });
 
 const limiter = rateLimit({
   windowMs: 60_000,
@@ -31,7 +36,7 @@ router.post("/preview/:brand", (req, res) => {
   );
 });
 
-router.post("/send/:brand", limiter, async (req, res) => {
+router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
   const brand = getBrand(req.params.brand);
   if (!brand) return res.status(404).json({ error: "unknown brand" });
 
@@ -72,7 +77,7 @@ router.post("/send/:brand", limiter, async (req, res) => {
     log({ at: new Date().toISOString(), ok: false, brand: req.params.brand, to, cc, bcc, error: e.message, ms: Date.now() - started });
     res.status(502).json({ error: e.message });
   }
-});
+}));
 
 router.get("/health", (_req, res) =>
   res.json({ ok: true, provider: send.provider, brands: Object.keys(brands) })
