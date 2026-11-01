@@ -40,6 +40,7 @@ router.get("/diag", async (_req, res) => {
   out.logDir = process.env.LOG_DIR || "";
   out.smtpPort = process.env.SMTP_PORT || "";
   out.passLen = (process.env.SMTP_PASS || "").length;
+  out.smtpKeys = Object.keys(process.env).filter((key) => /SMTP/i.test(key));
 
   await new Promise((resolve) => {
     const smtpPort = Number(process.env.SMTP_PORT || 465);
@@ -63,6 +64,7 @@ router.get("/diag", async (_req, res) => {
       resolve();
     });
   });
+  res.set("Cache-Control", "no-store");
   res.json(out);
 });
 
