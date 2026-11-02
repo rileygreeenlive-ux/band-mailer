@@ -156,7 +156,12 @@ router.post("/send-template", asyncRoute(async (req, res) => {
 }));
 
 router.get("/health", (_req, res) =>
-  res.json({ ok: true, provider: send.provider, brands: Object.keys(brands) })
+  res.json({
+    ok: true,
+    provider: send.provider,
+    brands: Object.keys(brands),
+    from: process.env.MAIL_FROM,
+  })
 );
 
 module.exports = router;
