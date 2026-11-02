@@ -3,8 +3,10 @@ const ALLOW = new Set(["templates", "send-template", "health"]);
 module.exports = async function handler(req, res) {
   const urlPath = new URL(req.url, "http://localhost").pathname;
   const urlSegments = urlPath.replace(/^\/api\/?/, "").split("/").filter(Boolean);
-  const querySegments = [].concat(req.query.path || []);
-  const segs = querySegments.length ? querySegments : urlSegments;
+  const querySegments = [].concat(req.query.path || []).flatMap((segment) => String(segment).split("/"));
+  const candidates = querySegments.length ? querySegments : urlSegments;
+  const allowedIndex = candidates.findIndex((segment) => ALLOW.has(segment));
+  const segs = allowedIndex >= 0 ? candidates.slice(allowedIndex) : candidates;
   if (!segs.length || !ALLOW.has(segs[0])) {
     return res.status(404).json({ error: "not found" });
   }
