@@ -47,6 +47,20 @@ router.get("/templates/sendas", async (_req, res) => {
   }
 });
 
+router.get("/gmail/profile", async (_req, res) => {
+  try {
+    const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/profile", {
+      headers: { Authorization: "Bearer " + await accessToken() },
+    });
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(`gmail profile lookup failed (${response.status})`);
+    res.json({ emailAddress: json.emailAddress || null });
+  } catch (error) {
+    console.error(error);
+    res.status(502).json({ error: error.message });
+  }
+});
+
 router.get("/diag", async (_req, res) => {
   const out = {};
   try {
