@@ -1,0 +1,14 @@
+{
+  "id": "receipt",
+  "name": "Receipt",
+  "category": "Billing",
+  "defaultSubject": "Your receipt",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Your receipt" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "itemName", "label": "Item", "default": "Saturday Session ticket" },
+    { "key": "amount", "label": "Amount", "default": "£12.00" },
+    { "key": "reference", "label": "Reference", "default": "BM-1042" },
+    { "key": "paidOn", "label": "Paid on", "default": "2 November 2026" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "password-reset",
+  "name": "Password reset",
+  "category": "Account",
+  "defaultSubject": "Reset your password",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Reset your password" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "resetUrl", "label": "Reset link", "default": "https://example.com/reset" },
+    { "key": "expiresIn", "label": "Expires in", "default": "60 minutes" }
+  ]
+}

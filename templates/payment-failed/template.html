@@ -1,0 +1,14 @@
+{{> header}}
+    <tr><td style="padding:12px 32px 0 32px;font-size:15px;line-height:22px;color:#374151;">
+      Hello {{firstName}},
+    </td></tr>
+    <tr><td style="padding:12px 32px 0 32px;font-size:15px;line-height:22px;color:#374151;">
+      Your payment of <strong>{{amount}}</strong> for {{itemName}} didn't complete. {{reason}}
+    </td></tr>
+    <tr><td style="padding:12px 32px 0 32px;font-size:15px;line-height:22px;color:#374151;">
+      Your place is held for 48 hours.
+    </td></tr>
+    <tr><td style="padding:20px 32px 0 32px;">
+      <a href="{{retryUrl}}" style="display:inline-block;background:#111827;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;padding:12px 22px;border-radius:6px;">Try again</a>
+    </td></tr>
+{{> footer}}

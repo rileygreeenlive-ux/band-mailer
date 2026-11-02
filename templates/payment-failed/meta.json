@@ -1,0 +1,14 @@
+{
+  "id": "payment-failed",
+  "name": "Payment failed",
+  "category": "Billing",
+  "defaultSubject": "Payment didn't go through",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Payment didn't go through" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "itemName", "label": "Item", "default": "Saturday Session ticket" },
+    { "key": "amount", "label": "Amount", "default": "£12.00" },
+    { "key": "reason", "label": "Reason", "default": "Card declined by issuer." },
+    { "key": "retryUrl", "label": "Retry link", "default": "https://example.com/retry" }
+  ]
+}

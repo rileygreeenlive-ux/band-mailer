@@ -1,0 +1,13 @@
+{
+  "id": "registration-initiated",
+  "name": "Registration initiated",
+  "category": "Account",
+  "defaultSubject": "Finish your registration",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "One step left" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "completeBy", "label": "Complete by", "default": "10 March" },
+    { "key": "completeUrl", "label": "Completion link", "default": "https://example.com/complete" }
+  ]
+}
