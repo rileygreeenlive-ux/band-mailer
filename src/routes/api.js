@@ -39,25 +39,15 @@ router.get("/templates/sendas", async (_req, res) => {
     if (!response.ok) throw new Error(`sendAs lookup failed (${response.status}): ${JSON.stringify(json)}`);
     const aliases = (json.sendAs || [])
       .filter((entry) => entry.verificationStatus === "accepted")
-      .map((entry) => ({ email: entry.sendAsEmail, name: entry.displayName || "" }));
+      .map((entry) => ({
+        email: entry.sendAsEmail,
+        name: entry.displayName || "",
+        isPrimary: Boolean(entry.isPrimary),
+      }));
     res.json(aliases.length ? aliases : [{ email: process.env.MAIL_FROM, name: "" }]);
   } catch (error) {
     console.error(error);
     res.json([{ email: process.env.MAIL_FROM, name: "" }]);
-  }
-});
-
-router.get("/gmail/profile", async (_req, res) => {
-  try {
-    const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/profile", {
-      headers: { Authorization: "Bearer " + await accessToken() },
-    });
-    const json = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(`gmail profile lookup failed (${response.status})`);
-    res.json({ emailAddress: json.emailAddress || null });
-  } catch (error) {
-    console.error(error);
-    res.status(502).json({ error: error.message });
   }
 });
 
