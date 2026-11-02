@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const auth = require("./middleware/auth");
 const api = require("./routes/api");
 const pages = require("./routes/pages");
+const templates = require("./routes/templates");
 
 const app = express();
 app.disable("x-powered-by");
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, "..", "public"), { index: false }));
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
 
 app.use("/api", auth, api);
+app.use("/api/templates", templates);
 app.use("/", pages);
 
 app.use((_req, res) => res.status(404).json({ error: "not found" }));

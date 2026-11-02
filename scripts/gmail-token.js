@@ -9,7 +9,7 @@ const authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" + new URLSearchP
   client_id: GMAIL_CLIENT_ID,
   redirect_uri: REDIRECT,
   response_type: "code",
-  scope: "https://www.googleapis.com/auth/gmail.send",
+  scope: "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.settings.basic",
   access_type: "offline",
   prompt: "consent",
 });

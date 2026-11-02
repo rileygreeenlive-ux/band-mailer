@@ -63,4 +63,4 @@ async function send(message) {
   return { id: json.id, provider: "gmail-api" };
 }
 
-module.exports = { send };
+module.exports = { accessToken, send };

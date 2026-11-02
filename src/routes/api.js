@@ -5,6 +5,8 @@ const render = require("../mail/render");
 const toText = require("../mail/text");
 const headers = require("../mail/headers");
 const send = require("../mail/transport");
+const { accessToken } = require("../mail/gmail-api");
+const { render: renderTemplate, parseRecipients } = require("../templates/render");
 const log = require("../lib/log");
 const { parseList, buildContent } = require("../middleware/validate");
 
@@ -27,6 +29,23 @@ const getBrand = (slug) => brands[slug] || null;
 router.get("/brands", (_req, res) =>
   res.json(Object.entries(brands).map(([slug, b]) => ({ slug, name: b.name, defaults: b.defaults })))
 );
+
+router.get("/templates/sendas", async (_req, res) => {
+  try {
+    const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs", {
+      headers: { Authorization: "Bearer " + await accessToken() },
+    });
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(`sendAs lookup failed (${response.status}): ${JSON.stringify(json)}`);
+    const aliases = (json.sendAs || [])
+      .filter((entry) => entry.verificationStatus === "accepted")
+      .map((entry) => ({ email: entry.sendAsEmail, name: entry.displayName || "" }));
+    res.json(aliases.length ? aliases : [{ email: process.env.MAIL_FROM, name: "" }]);
+  } catch (error) {
+    console.error(error);
+    res.json([{ email: process.env.MAIL_FROM, name: "" }]);
+  }
+});
 
 router.get("/diag", async (_req, res) => {
   const out = {};
@@ -97,6 +116,23 @@ router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
       text: toText(brand, content, { unsubscribeUrl: unsub }),
       headers: headers(unsub),
     });
+
+    router.post("/send-template", asyncRoute(async (req, res) => {
+      const { templateId, to, subject, variables } = req.body || {};
+      if (!templateId || !to) return res.status(400).json({ error: "templateId and to required" });
+      if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
+
+      const recipients = parseRecipients(to);
+      const { html, meta } = renderTemplate(templateId, variables || {});
+      const result = await send({
+        to: recipients.join(", "),
+        subject: subject || meta.defaultSubject,
+        html,
+        from: process.env.MAIL_FROM,
+        fromName: process.env.MAIL_ORG || "Band Mailer",
+      });
+      res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
+    }));
     try {
       log({ at: new Date().toISOString(), ok: true, brand: req.params.brand, to, cc, bcc, ...out, ms: Date.now() - started });
     } catch (e) {

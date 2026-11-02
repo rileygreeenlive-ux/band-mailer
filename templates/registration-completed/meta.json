@@ -1,0 +1,12 @@
+{
+  "id": "registration-completed",
+  "name": "Registration completed",
+  "category": "Account",
+  "defaultSubject": "You're registered",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "You're registered" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "details", "label": "Details", "multiline": true, "default": "Doors 19:00, 12 March." }
+  ]
+}
