@@ -1,7 +1,10 @@
 const ALLOW = new Set(["templates", "send-template", "health"]);
 
 module.exports = async function handler(req, res) {
-  const segs = [].concat(req.query.path || []);
+  const urlPath = new URL(req.url, "http://localhost").pathname;
+  const urlSegments = urlPath.replace(/^\/api\/?/, "").split("/").filter(Boolean);
+  const querySegments = [].concat(req.query.path || []);
+  const segs = querySegments.length ? querySegments : urlSegments;
   if (!segs.length || !ALLOW.has(segs[0])) {
     return res.status(404).json({ error: "not found" });
   }
