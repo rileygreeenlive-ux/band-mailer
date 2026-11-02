@@ -117,22 +117,6 @@ router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
       headers: headers(unsub),
     });
 
-    router.post("/send-template", asyncRoute(async (req, res) => {
-      const { templateId, to, subject, variables } = req.body || {};
-      if (!templateId || !to) return res.status(400).json({ error: "templateId and to required" });
-      if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
-
-      const recipients = parseRecipients(to);
-      const { html, meta } = renderTemplate(templateId, variables || {});
-      const result = await send({
-        to: recipients.join(", "),
-        subject: subject || meta.defaultSubject,
-        html,
-        from: process.env.MAIL_FROM,
-        fromName: process.env.MAIL_ORG || "Band Mailer",
-      });
-      res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
-    }));
     try {
       log({ at: new Date().toISOString(), ok: true, brand: req.params.brand, to, cc, bcc, ...out, ms: Date.now() - started });
     } catch (e) {
@@ -148,6 +132,23 @@ router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
     }
     res.status(502).json({ error: e.message });
   }
+}));
+
+router.post("/send-template", asyncRoute(async (req, res) => {
+  const { templateId, to, subject, variables } = req.body || {};
+  if (!templateId || !to) return res.status(400).json({ error: "templateId and to required" });
+  if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
+
+  const recipients = parseRecipients(to);
+  const { html, meta } = renderTemplate(templateId, variables || {});
+  const result = await send({
+    to: recipients.join(", "),
+    subject: subject || meta.defaultSubject,
+    html,
+    from: process.env.MAIL_FROM,
+    fromName: process.env.MAIL_ORG || "Band Mailer",
+  });
+  res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
 }));
 
 router.get("/health", (_req, res) =>
