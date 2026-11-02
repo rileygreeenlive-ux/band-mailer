@@ -1,0 +1,13 @@
+{
+  "id": "brand-announcement",
+  "name": "Brand announcement",
+  "category": "Brand",
+  "defaultSubject": "An announcement",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Something's changing" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "body", "label": "Body", "multiline": true, "default": "We've been quiet for a while. Here's what we've been working on." },
+    { "key": "ctaLabel", "label": "Button label", "default": "Read more" },
+    { "key": "ctaUrl", "label": "Button link", "default": "https://example.com/news" }
+  ]
+}

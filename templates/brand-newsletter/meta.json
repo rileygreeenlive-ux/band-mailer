@@ -1,0 +1,15 @@
+{
+  "id": "brand-newsletter",
+  "name": "Brand newsletter",
+  "category": "Brand",
+  "defaultSubject": "This month",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "This month" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "intro", "label": "Intro", "multiline": true, "default": "Three things worth your time this month." },
+    { "key": "itemOneTitle", "label": "Item 1 title", "default": "New room, same night" },
+    { "key": "itemOneBody", "label": "Item 1 body", "multiline": true, "default": "We've moved the late set downstairs. Same lineup, better sound." },
+    { "key": "itemTwoTitle", "label": "Item 2 title", "default": "Members' presale" },
+    { "key": "itemTwoBody", "label": "Item 2 body", "multiline": true, "default": "Presale opens Thursday 10:00, members only, 48 hours ahead of general." }
+  ]
+}

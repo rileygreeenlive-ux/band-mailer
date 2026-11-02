@@ -1,0 +1,12 @@
+{
+  "id": "brand-thankyou",
+  "name": "Brand thank you",
+  "category": "Brand",
+  "defaultSubject": "Thank you",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Thank you" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "message", "label": "Message", "multiline": true, "default": "Thanks for being part of this. It genuinely makes a difference." },
+    { "key": "signatureName", "label": "Signature", "default": "The team" }
+  ]
+}
