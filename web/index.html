@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Band Mailer</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="bar">
+  <strong>Band Mailer</strong>
+  <span id="wake" class="wake" hidden>waking server…</span>
+</header>
+<main class="wrap">
+  <aside class="pane">
+    <label class="field"><span>Template</span>
+      <input id="search" type="search" placeholder="Filter templates">
+    </label>
+    <div id="picker" class="picker"></div>
+    <label class="field"><span>To</span>
+      <div id="chips" class="chips"></div>
+      <input id="to" type="email" placeholder="name@example.com">
+    </label>
+    <label class="field"><span>Subject</span>
+      <input id="subject" maxlength="200">
+    </label>
+    <div id="vars" class="vars"></div>
+    <button id="send" class="send" disabled>Send</button>
+    <div id="result" class="result" hidden></div>
+    <div id="recent" class="recent"></div>
+  </aside>
+  <section class="pane preview">
+    <div class="preview-bar">
+      <button data-w="600" class="on">Desktop</button>
+      <button data-w="375">Mobile</button>
+    </div>
+    <iframe id="frame" title="Preview" style="width:600px"></iframe>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
