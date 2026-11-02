@@ -1,0 +1,13 @@
+{
+  "id": "waitlist-offer",
+  "name": "Waitlist offer",
+  "category": "Event",
+  "defaultSubject": "A place has opened up",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "A place has opened up" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "claimUrl", "label": "Claim link", "default": "https://example.com/claim" },
+    { "key": "expiresIn", "label": "Expires in", "default": "24 hours" }
+  ]
+}

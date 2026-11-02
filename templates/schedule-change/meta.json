@@ -1,0 +1,14 @@
+{
+  "id": "schedule-change",
+  "name": "Schedule change",
+  "category": "Event",
+  "defaultSubject": "Time change for Saturday Session",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Time change" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "oldWhen", "label": "Was", "default": "Saturday 14 March, 19:00" },
+    { "key": "newWhen", "label": "Now", "default": "Saturday 14 March, 20:30" },
+    { "key": "note", "label": "Note", "multiline": true, "default": "Support act added. Your ticket stays valid, no action needed." }
+  ]
+}

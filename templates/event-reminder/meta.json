@@ -1,0 +1,14 @@
+{
+  "id": "event-reminder",
+  "name": "Event reminder",
+  "category": "Event",
+  "defaultSubject": "Reminder: Saturday Session",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "See you Saturday" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "when", "label": "When", "default": "Saturday 14 March, 19:00" },
+    { "key": "venue", "label": "Venue", "default": "The Old Foundry, Leeds" },
+    { "key": "doors", "label": "Doors", "default": "Doors 18:30" }
+  ]
+}

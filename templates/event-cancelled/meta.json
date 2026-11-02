@@ -1,0 +1,14 @@
+{
+  "id": "event-cancelled",
+  "name": "Event cancelled",
+  "category": "Event",
+  "defaultSubject": "Saturday Session is cancelled",
+  "variables": [
+    { "key": "title", "label": "Heading", "default": "Event cancelled" },
+    { "key": "firstName", "label": "First name", "default": "Alex" },
+    { "key": "eventName", "label": "Event name", "default": "Saturday Session" },
+    { "key": "when", "label": "When", "default": "Saturday 14 March, 19:00" },
+    { "key": "reason", "label": "Reason", "multiline": true, "default": "The venue has closed for emergency repairs." },
+    { "key": "refundNote", "label": "Refund note", "multiline": true, "default": "Tickets are refunded automatically within 5 working days. Nothing to do on your side." }
+  ]
+}
