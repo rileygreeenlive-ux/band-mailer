@@ -1,0 +1,18 @@
+{
+  "id": "payment-initiation",
+  "name": "Payment initiation",
+  "category": "Payment",
+  "defaultSubject": "Registration for Access to Mr. Riley Green via BMLG Records",
+  "variables": [
+    { "key": "bannerUrl", "label": "Banner image URL", "default": "https://band-mailer-lb0t.onrender.com/assets/bmlg-banner.png" },
+    { "key": "title", "label": "Subject line", "default": "Registration for Access to Mr. Riley Green via BMLG Records" },
+    { "key": "greeting", "label": "Greeting", "default": "Dear [Ma/Sir]," },
+    { "key": "intro", "label": "Intro paragraph", "multiline": true, "default": "I hope this message finds you well. This is the BMLG record label for Mr Riley Green, and I’m writing to inform you about a crucial step required for your potential involvement with BMLG Records and your access to Mr. Riley Green. To proceed with registration and to ensure that your details are properly submitted for review, there is a registration fee of $200. This fee will provide you with the necessary form to complete the registration process and gain further access to Mr. Green’s management team and any potential opportunities that may arise." },
+    { "key": "paymentMethods", "label": "Payment methods", "multiline": true, "default": "Here are the payment methods: Cashapp, PayPal,Apple Pay and you can make your payment with BTC for your own convenience" },
+    { "key": "afterPayment", "label": "After payment", "multiline": true, "default": "Once the fee is processed, you’ll be provided with a comprehensive registration form, along with specific instructions for completing the necessary steps to move forward." },
+    { "key": "outro", "label": "Closing paragraph", "multiline": true, "default": "Please don’t hesitate to reach out if you have any questions or need additional information. We look forward to assisting you through this process and supporting you as you connect with the opportunities ahead." },
+    { "key": "signOff", "label": "Sign-off", "default": "Best regards," },
+    { "key": "signature", "label": "Signature", "default": "[management]" },
+    { "key": "org", "label": "Organisation", "default": "BMLG Records" }
+  ]
+}
