@@ -30,6 +30,26 @@ router.get("/brands", (_req, res) =>
   res.json(Object.entries(brands).map(([slug, b]) => ({ slug, name: b.name, defaults: b.defaults })))
 );
 
+router.get("/gmail/profile", async (_req, res) => {
+  try {
+    const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs", {
+      headers: { Authorization: "Bearer " + await accessToken() },
+    });
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(`sendAs lookup failed (${response.status}): ${JSON.stringify(json)}`);
+    const primary = (json.sendAs || []).find((entry) => entry.isPrimary);
+    res.json({
+      email: primary?.sendAsEmail || "",
+      isPrimary: Boolean(primary),
+      treatAsAlias: primary?.treatAsAlias,
+      verificationStatus: primary?.verificationStatus || "",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(502).json({ error: error.message });
+  }
+});
+
 router.get("/templates/sendas", async (_req, res) => {
   try {
     const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs", {
