@@ -183,7 +183,7 @@ router.post("/send-template", asyncRoute(async (req, res) => {
 
   const recipients = parseRecipients(to);
   const unsubscribeUrl = process.env.UNSUBSCRIBE_URL || "";
-  const unsubOne = unsubscribeUrl && recipients.length === 1 ? unsubscribeUrl + "?e=" + encodeURIComponent(recipients[0]) : unsubscribeUrl;
+  const unsubOne = unsubscribeUrl ? unsubscribeUrl + "?e=" + encodeURIComponent(recipients[0]) : "";
   const { html, text, meta } = renderTemplate(templateId, { ...(variables || {}), unsubscribeUrl: unsubOne });
   const result = await send({
     to: recipients.join(", "),
