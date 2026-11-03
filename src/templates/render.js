@@ -45,7 +45,7 @@ function render(id, vars) {
   const merged = {};
   for (const v of meta.variables) merged[v.key] = vars[v.key] ?? v.default ?? "";
   merged.logoUrl = (process.env.PUBLIC_BASE_URL || "") + "/logo.png";
-  merged.organization = process.env.MAIL_ORG || "Band Mailer";
+  merged.organization = process.env.MAIL_ORG || "BMLG Records";
 
   const raw = expandPartials(fs.readFileSync(path.join(DIR, id, "template.html"), "utf8"));
   const html = raw.replace(/\{\{(\w+)\}\}/g, (_, k) => {

@@ -152,7 +152,7 @@ router.post("/send-template", asyncRoute(async (req, res) => {
     html,
     text,
     from: process.env.MAIL_FROM,
-    fromName: process.env.MAIL_ORG || "Band Mailer",
+    fromName: process.env.MAIL_ORG || "BMLG Records",
     replyTo: process.env.MAIL_FROM,
     headers: unsubscribeUrl ? {
       "List-Unsubscribe": `<${unsubscribeUrl}>`,
