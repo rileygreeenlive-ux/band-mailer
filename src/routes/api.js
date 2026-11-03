@@ -144,13 +144,20 @@ router.post("/send-template", asyncRoute(async (req, res) => {
   if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
 
   const recipients = parseRecipients(to);
-  const { html, meta } = renderTemplate(templateId, variables || {});
+  const { html, text, meta } = renderTemplate(templateId, variables || {});
+  const unsubscribeUrl = process.env.UNSUBSCRIBE_URL || "";
   const result = await send({
     to: recipients.join(", "),
     subject: subject || meta.defaultSubject,
     html,
+    text,
     from: process.env.MAIL_FROM,
     fromName: process.env.MAIL_ORG || "Band Mailer",
+    replyTo: process.env.MAIL_FROM,
+    headers: unsubscribeUrl ? {
+      "List-Unsubscribe": `<${unsubscribeUrl}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    } : {},
   });
   res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
 }));

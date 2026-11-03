@@ -52,7 +52,12 @@ function render(id, vars) {
     const value = esc(merged[k] ?? "");
     return meta.variables.find((v) => v.key === k)?.multiline ? value.replace(/\n/g, "<br>") : value;
   });
-  return { html, meta };
+  const text = meta.variables
+    .filter((variable) => !/Url$/i.test(variable.key))
+    .map((variable) => merged[variable.key])
+    .filter((value) => String(value || "").trim())
+    .join("\n\n");
+  return { html, text, meta };
 }
 
 function parseRecipients(to) {
