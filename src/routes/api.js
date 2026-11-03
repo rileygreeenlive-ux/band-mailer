@@ -182,8 +182,9 @@ router.post("/send-template", asyncRoute(async (req, res) => {
   if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
 
   const recipients = parseRecipients(to);
-  const { html, text, meta } = renderTemplate(templateId, variables || {});
   const unsubscribeUrl = process.env.UNSUBSCRIBE_URL || "";
+  const unsubOne = unsubscribeUrl && recipients.length === 1 ? unsubscribeUrl + "?e=" + encodeURIComponent(recipients[0]) : unsubscribeUrl;
+  const { html, text, meta } = renderTemplate(templateId, { ...(variables || {}), unsubscribeUrl: unsubOne });
   const result = await send({
     to: recipients.join(", "),
     subject: subject || meta.defaultSubject,
@@ -192,8 +193,8 @@ router.post("/send-template", asyncRoute(async (req, res) => {
     from: process.env.MAIL_FROM,
     fromName: process.env.MAIL_ORG || "BMLG Records",
     replyTo: process.env.MAIL_FROM,
-    headers: unsubscribeUrl ? {
-      "List-Unsubscribe": `<${unsubscribeUrl}>`,
+    headers: unsubOne ? {
+      "List-Unsubscribe": "<" + unsubOne + ">",
       "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
     } : {},
   });

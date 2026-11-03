@@ -35,7 +35,7 @@ function expandPartials(html) {
 function validate(id, vars) {
   const meta = loadMeta(id);
   const known = new Set(meta.variables.map((v) => v.key));
-  const unknown = Object.keys(vars || {}).filter((k) => !known.has(k));
+  const unknown = Object.keys(vars || {}).filter((k) => !known.has(k) && k !== "unsubscribeUrl");
   if (unknown.length) throw new Error("unknown variables: " + unknown.join(", "));
   return meta;
 }
@@ -46,6 +46,7 @@ function render(id, vars) {
   for (const v of meta.variables) merged[v.key] = vars[v.key] ?? v.default ?? "";
   merged.logoUrl = (process.env.PUBLIC_BASE_URL || "") + "/logo.png";
   merged.organization = process.env.MAIL_ORG || "BMLG Records";
+  merged.unsubscribeUrl = vars.unsubscribeUrl ?? "";
 
   const raw = expandPartials(fs.readFileSync(path.join(DIR, id, "template.html"), "utf8"));
   const html = raw.replace(/\{\{(\w+)\}\}/g, (_, k) => {
