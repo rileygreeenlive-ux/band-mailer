@@ -32,8 +32,12 @@ router.get("/brands", (_req, res) =>
 
 router.get("/gmail/profile", async (_req, res) => {
   try {
+    const token = await accessToken();
+    const tokenInfo = await fetch(
+      "https://oauth2.googleapis.com/tokeninfo?access_token=" + encodeURIComponent(token)
+    ).then((response) => response.json().catch(() => ({})));
     const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/settings/sendAs", {
-      headers: { Authorization: "Bearer " + await accessToken() },
+      headers: { Authorization: "Bearer " + token },
     });
     const json = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(`sendAs lookup failed (${response.status}): ${JSON.stringify(json)}`);
@@ -43,10 +47,22 @@ router.get("/gmail/profile", async (_req, res) => {
       isPrimary: Boolean(primary),
       treatAsAlias: primary?.treatAsAlias,
       verificationStatus: primary?.verificationStatus || "",
+      scopes: String(tokenInfo.scope || "").split(" ").filter(Boolean),
     });
   } catch (error) {
     console.error(error);
-    res.status(502).json({ error: error.message });
+    try {
+      const token = await accessToken();
+      const tokenInfo = await fetch(
+        "https://oauth2.googleapis.com/tokeninfo?access_token=" + encodeURIComponent(token)
+      ).then((response) => response.json().catch(() => ({})));
+      res.status(502).json({
+        error: error.message,
+        scopes: String(tokenInfo.scope || "").split(" ").filter(Boolean),
+      });
+    } catch (diagnosticError) {
+      res.status(502).json({ error: error.message, diagnostic: diagnosticError.message });
+    }
   }
 });
 
