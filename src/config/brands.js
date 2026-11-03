@@ -26,7 +26,7 @@ module.exports = {
         "Once the fee is processed, you’ll be provided with a comprehensive registration form, along with specific instructions for completing the necessary steps to move forward.",
         "Please don’t hesitate to reach out if you have any questions or need additional information. We look forward to assisting you through this process and supporting you as you connect with the opportunities ahead.",
       ],
-      signatureName: "[management]",
+      signatureName: "Riley Green Management Team",
       organization: "BMLG Records",
     },
   },

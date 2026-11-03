@@ -2,3 +2,5 @@
 node_modules
 logs
 client_secret_*.json
+.env.bak-oauth
+data/

@@ -1,4 +1,4 @@
-﻿const path = require("path");
+const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
 const auth = require("./middleware/auth");
@@ -26,6 +26,7 @@ app.use(
   })
 );
 
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ limit: "256kb" }));
 app.use(express.static(path.join(__dirname, "..", "public"), { index: false }));
 

@@ -1,6 +1,7 @@
-﻿const safeEq = require("../lib/safe-eq");
+const safeEq = require("../lib/safe-eq");
 
 module.exports = function auth(req, res, next) {
+  if (req.path === "/unsubscribe") return next();
   if (safeEq(req.get("x-api-key"), process.env.SEND_API_KEY)) return next();
   const h = req.get("authorization") || "";
   if (h.startsWith("Basic ")) {

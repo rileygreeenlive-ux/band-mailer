@@ -1,6 +1,8 @@
-﻿const express = require("express");
+const express = require("express");
 const rateLimit = require("express-rate-limit");
 const brands = require("../config");
+const fs = require("fs");
+const path = require("path");
 const render = require("../mail/render");
 const toText = require("../mail/text");
 const headers = require("../mail/headers");
@@ -198,6 +200,24 @@ router.post("/send-template", asyncRoute(async (req, res) => {
   res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
 }));
 
+router.get("/unsubscribe", handleUnsub);
+router.post("/unsubscribe", handleUnsub);
+
+async function handleUnsub(req, res) {
+  const email = String((req.query.e || (req.body || {}).e || "")).trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+    return res.status(400).type("html").send("<p>Missing or invalid address.</p>");
+  const file = path.join(process.cwd(), "data", "suppressed.json");
+  await fs.promises.mkdir(path.dirname(file), { recursive: true });
+  let list = [];
+  try { list = JSON.parse(await fs.promises.readFile(file, "utf8")); } catch {}
+  if (!Array.isArray(list)) list = [];
+  if (!list.includes(email)) {
+    list.push(email);
+    await fs.promises.writeFile(file, JSON.stringify(list, null, 2));
+  }
+  res.type("html").send(`<p>${email} has been unsubscribed.</p>`);
+}
 router.get("/health", (_req, res) =>
   res.json({
     ok: true,
