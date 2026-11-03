@@ -10,6 +10,7 @@ const send = require("../mail/transport");
 const { accessToken } = require("../mail/gmail-api");
 const { render: renderTemplate, parseRecipients } = require("../templates/render");
 const log = require("../lib/log");
+const suppressed = require("../lib/suppressed");
 const { parseList, buildContent } = require("../middleware/validate");
 
 const router = express.Router();
@@ -138,6 +139,8 @@ router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
     return res.status(400).json({ error: e.message });
   }
   if (!to.length) return res.status(400).json({ error: "to required" });
+  to = await suppressed.filter(to);
+  if (!to.length) return res.status(400).json({ error: "all recipients suppressed" });
   if (!body.subject || !String(body.subject).trim())
     return res.status(400).json({ error: "subject required" });
 
@@ -181,7 +184,8 @@ router.post("/send-template", asyncRoute(async (req, res) => {
   if (!templateId || !to) return res.status(400).json({ error: "templateId and to required" });
   if (subject && subject.length > 200) return res.status(400).json({ error: "subject too long" });
 
-  const recipients = parseRecipients(to);
+  const recipients = await suppressed.filter(parseRecipients(to));
+  if (!recipients.length) return res.status(400).json({ error: "all recipients suppressed" });
   const unsubscribeUrl = process.env.UNSUBSCRIBE_URL || "";
   const unsubOne = unsubscribeUrl ? unsubscribeUrl + "?e=" + encodeURIComponent(recipients[0]) : "";
   const { html, text, meta } = renderTemplate(templateId, { ...(variables || {}), unsubscribeUrl: unsubOne });
@@ -208,16 +212,8 @@ async function handleUnsub(req, res) {
   const email = String((req.query.e || (req.body || {}).e || "")).trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
     return res.status(400).type("html").send("<p>Missing or invalid address.</p>");
-  const file = path.join(process.cwd(), "data", "suppressed.json");
-  await fs.promises.mkdir(path.dirname(file), { recursive: true });
-  let list = [];
-  try { list = JSON.parse(await fs.promises.readFile(file, "utf8")); } catch {}
-  if (!Array.isArray(list)) list = [];
-  if (!list.includes(email)) {
-    list.push(email);
-    await fs.promises.writeFile(file, JSON.stringify(list, null, 2));
-  }
-  res.type("html").send(`<p>${email} has been unsubscribed.</p>`);
+  await suppressed.add(email);
+  res.type("html").send(`<p>${email.replace(/</g, "&lt;").replace(/>/g, "&gt;")} has been unsubscribed.</p>`);
 }
 router.get("/health", (_req, res) =>
   res.json({
