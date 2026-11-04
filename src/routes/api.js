@@ -125,6 +125,21 @@ router.post("/preview/:brand", (req, res) => {
   );
 });
 
+
+router.post("/templates/:id/preview", (req, res) => {
+  const { variables } = req.body || {};
+  try {
+    const { html } = renderTemplate(req.params.id, {
+      ...(variables || {}),
+      unsubscribeUrl: process.env.UNSUBSCRIBE_URL || "",
+    });
+    res.type("html").send(html);
+  } catch (e) {
+    res.status(404).json({ error: e.message });
+  }
+});
+
+
 router.post("/send/:brand", limiter, asyncRoute(async (req, res) => {
   const brand = getBrand(req.params.brand);
   if (!brand) return res.status(404).json({ error: "unknown brand" });

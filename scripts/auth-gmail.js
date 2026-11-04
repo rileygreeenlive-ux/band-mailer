@@ -111,6 +111,12 @@ const server = http.createServer(async (req, res) => {
   server.close();
 });
 
+app.use((err, req, res, next) => {
+  console.error(err);
+  const status = err.statusCode || err.status || 500;
+  res.status(status).json({ error: status >= 500 ? 'internal error' : err.message });
+});
+
 server.listen(PORT, () => {
   console.log("Open this URL in the IDE browser and sign in as the management account:\n");
   console.log(authUrl.toString(), "\n");
