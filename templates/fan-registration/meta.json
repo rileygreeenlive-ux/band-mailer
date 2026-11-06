@@ -1,0 +1,17 @@
+{
+  "id": "fan-registration",
+  "name": "Fan Registration & Access",
+  "category": "Fan Access",
+  "defaultSubject": "Registration for Access to Mr. Riley Green",
+  "variables": [
+    { "key": "salutation", "label": "Salutation", "default": "Tiffany" },
+    { "key": "artist", "label": "Artist", "default": "Riley Green" },
+    { "key": "label", "label": "Label", "default": "BMLG Records" },
+    { "key": "fee", "label": "Registration Fee", "default": "$200.00" },
+    { "key": "benefit", "label": "What the fee grants", "default": "access to the official registration form and further opportunities to engage with Riley Green" },
+    { "key": "paymentMethods", "label": "Payment methods", "default": "Payment may be made via Cash App, PayPal, or Apple Pay. For your convenience, payment in Bitcoin (BTC) is also accepted." },
+    { "key": "signoffName", "label": "Sign-off name", "default": "Management" },
+    { "key": "organization", "label": "Organization", "default": "BMLG Records" }
+  ]
+}
+

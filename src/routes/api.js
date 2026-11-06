@@ -466,15 +466,144 @@ router.post("/send-template", asyncRoute(async (req, res) => {
   res.json({ ok: true, provider: result.provider, id: result.id, count: recipients.length });
 }));
 
+function renderUnsubPage({ email, error, resubscribed }) {
+  const safe = (s) => String(s || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const org = process.env.MAIL_ORG || "BMLG Records";
+  const loc = process.env.MAIL_LOCATION || "Leeds";
+  const resub = process.env.RESUBSCRIBE_URL || "/api/subscribe?e=" + encodeURIComponent(email || "");
+  const home = process.env.HOME_URL || process.env.PUBLIC_BASE_URL || "#";
+
+  if (error) {
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Unsubscribe</title>
+<style>
+:root{--ink:#1a1a1a;--line:#d8d2c4;--bg:#f4f1e8;--accent:#0d0d0d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:460px;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:40px 36px;text-align:center}
+.icon{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:#e9e4d8;color:#5d574c;display:flex;align-items:center;justify-content:center;font-size:28px}
+h1{font-size:22px;font-weight:600;margin-bottom:12px}
+p{color:#5d574c;font-size:15px;margin-bottom:16px}
+.footer{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:#8a8375}
+</style></head><body>
+<div class="card">
+<div class="icon">!</div>
+<h1>Something's off</h1>
+<p>We couldn't process that unsubscribe link. If you meant to leave our list, try again or reply to any of our emails and we'll sort it out.</p>
+<div class="footer">${safe(org)} · ${safe(loc)}</div>
+</div></body></html>`;
+  }
+
+  if (resubscribed) {
+    return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>You're resubscribed</title>
+<style>
+:root{--ink:#1a1a1a;--line:#d8d2c4;--bg:#f4f1e8;--accent:#0d0d0d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:480px;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:40px 36px;text-align:center}
+.icon{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px}
+h1{font-size:22px;font-weight:600;margin-bottom:12px}
+p{color:#5d574c;font-size:15px;margin-bottom:16px}
+.email{font-family:ui-monospace,monospace;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;margin-bottom:22px;word-break:break-all}
+.actions{display:flex;flex-direction:column;gap:10px}
+a.btn{display:block;padding:13px 18px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.88}
+.footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:#8a8375;line-height:1.6}
+.footer a{color:#8a8375}
+</style></head><body>
+<div class="card">
+<div class="icon">✓</div>
+<h1>Welcome back!</h1>
+<p>You've been resubscribed to the ${safe(org)} mailing list. We're glad to have you back.</p>
+<div class="email">${safe(email)}</div>
+<div class="actions">
+<a class="btn btn-primary" href="${home}">Visit our site</a>
+</div>
+<div class="footer">${safe(org)} · ${safe(loc)}</div>
+</div></body></html>`;
+  }
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>You're unsubscribed</title>
+<style>
+:root{--ink:#1a1a1a;--line:#d8d2c4;--bg:#f4f1e8;--accent:#0d0d0d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:480px;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:40px 36px;text-align:center}
+.icon{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px}
+h1{font-size:22px;font-weight:600;margin-bottom:12px}
+p{color:#5d574c;font-size:15px;margin-bottom:16px}
+.email{font-family:ui-monospace,monospace;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;margin-bottom:22px;word-break:break-all}
+.actions{display:flex;flex-direction:column;gap:10px}
+a.btn{display:block;padding:13px 18px;border-radius:8px;font-weight:600;text-decoration:none;font-size:15px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--bg)}
+.footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:#8a8375;line-height:1.6}
+.footer a{color:#8a8375}
+</style></head><body>
+<div class="card">
+<div class="icon">✓</div>
+<h1>You're all set</h1>
+<p>You've been removed from our mailing list. We won't be sending you any more emails. Thanks for being part of the ${safe(org)} community — we'll miss having you in your inbox.</p>
+<div class="email">${safe(email)}</div>
+<div class="actions">
+<a class="btn btn-primary" href="${resub}">Change your mind — resubscribe</a>
+<a class="btn btn-ghost" href="${home}">Visit our site</a>
+</div>
+<div class="footer">${safe(org)} · ${safe(loc)}<br><a href="${resub}">Resubscribe</a></div>
+</div></body></html>`;
+}
+
 router.get("/unsubscribe", handleUnsub);
 router.post("/unsubscribe", handleUnsub);
 
 async function handleUnsub(req, res) {
   const email = String((req.query.e || (req.body || {}).e || "")).trim().toLowerCase();
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
-    return res.status(400).type("html").send("<p>Missing or invalid address.</p>");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return res.status(400).type("html").send(renderUnsubPage({ email: "", error: true }));
+  }
+
   await suppressed.add(email);
-  res.type("html").send(`<p>${email.replace(/</g, "&lt;").replace(/>/g, "&gt;")} has been unsubscribed.</p>`);
+
+  // Send a single confirmation email (bypasses the suppression filter)
+  try {
+    const { html, text } = renderTemplate("unsubscribe-confirmation", {
+      email,
+      organization: process.env.MAIL_ORG || "BMLG Records",
+      location: process.env.MAIL_LOCATION || "Leeds",
+      resubscribeUrl: process.env.RESUBSCRIBE_URL || (process.env.PUBLIC_BASE_URL || "") + "/api/subscribe?e=" + encodeURIComponent(email),
+      homeUrl: process.env.HOME_URL || process.env.PUBLIC_BASE_URL || "",
+    });
+    await send({
+      to: email,
+      subject: "You're unsubscribed",
+      html,
+      text,
+      from: process.env.MAIL_FROM,
+      fromName: process.env.MAIL_ORG || "BMLG Records",
+      replyTo: process.env.MAIL_FROM,
+    });
+  } catch (e) {
+    console.error("unsubscribe confirmation failed", e);
+  }
+
+  res.type("html").send(renderUnsubPage({ email }));
+}
+
+router.get("/subscribe", handleSubscribe);
+router.post("/subscribe", handleSubscribe);
+
+async function handleSubscribe(req, res) {
+  const email = String((req.query.e || (req.body || {}).e || "")).trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return res.status(400).type("html").send(renderUnsubPage({ email: "", error: true }));
+  }
+  await suppressed.remove(email);
+  res.type("html").send(renderUnsubPage({ email, resubscribed: true }));
 }
 router.get("/health", (_req, res) =>
   res.json({

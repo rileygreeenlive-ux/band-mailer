@@ -1,0 +1,13 @@
+{
+  "id": "unsubscribe-confirmation",
+  "name": "Unsubscribe confirmation",
+  "category": "Account",
+  "defaultSubject": "You're unsubscribed",
+  "variables": [
+    { "key": "email", "label": "Recipient email", "default": "" },
+    { "key": "organization", "label": "Organization", "default": "BMLG Records" },
+    { "key": "location", "label": "Location", "default": "Nashville TN" },
+    { "key": "resubscribeUrl", "label": "Resubscribe URL", "default": "" },
+    { "key": "homeUrl", "label": "Home URL", "default": "" }
+  ]
+}

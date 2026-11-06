@@ -30,4 +30,15 @@ async function filter(addresses) {
   return addresses.filter((a) => !set.has(String(a).trim().toLowerCase()));
 }
 
-module.exports = { read, add, filter };
+async function remove(email) {
+  const e = String(email || "").trim().toLowerCase();
+  if (!e) return false;
+  const list = await read();
+  const next = list.filter((item) => item !== e);
+  if (next.length === list.length) return false;
+  await fs.promises.mkdir(path.dirname(FILE), { recursive: true });
+  await fs.promises.writeFile(FILE, JSON.stringify(next, null, 2));
+  return true;
+}
+
+module.exports = { read, add, filter, remove };

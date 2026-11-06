@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Registration for Access</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f1e8;font-family:Georgia,'Times New Roman',serif;">
+  <div style="max-width:600px;margin:0 auto;padding:24px 16px;">
+
+    <!-- Preheader (hidden) -->
+    <div style="display:none;max-height:0;overflow:hidden;">
+      Registration for Access to {{artist}} via {{label}}. A registration fee of {{fee}} is required to proceed.
+    </div>
+
+    <!-- BLACK HEADER BANNER -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d0d;border-radius:10px 10px 0 0;">
+      <tr>
+        <td align="center" style="padding:30px 20px;">
+          <div style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:bold;letter-spacing:2px;color:#ffffff;line-height:1;white-space:nowrap;">
+            <span style="color:#e02424;">&#10022;</span>&nbsp;&nbsp;BIG MACHINE&nbsp;&nbsp;<span style="color:#e02424;">&#10022;</span>
+          </div>
+          <div style="font-family:Georgia,serif;font-size:13px;letter-spacing:7px;color:#c9c4b8;margin-top:8px;">LABEL GROUP</div>
+          <div style="width:120px;height:2px;background:#e02424;margin:16px auto 0;"></div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- WHITE BODY CARD -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #d8d2c4;border-top:0;border-radius:0 0 10px 10px;">
+      <tr>
+        <td style="padding:36px 34px;">
+
+          <!-- Title -->
+          <h1 style="margin:0 0 4px;font-size:21px;font-weight:bold;color:#1a1a1a;line-height:1.4;">
+            Registration for Access to {{artist}}
+          </h1>
+          <div style="font-size:14px;color:#5d574c;margin-bottom:26px;">via {{label}}</div>
+
+          <!-- Salutation -->
+          <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#1a1a1a;">Dear {{salutation}},</p>
+
+          <!-- P1: Intro -->
+          <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#3a362e;">
+            Thank you for your interest in {{artist}} and for reaching out to {{label}}. This correspondence is to confirm the next steps required to process your registration and to secure your access to {{artist}}.
+          </p>
+
+          <!-- P2: Fee -->
+          <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#3a362e;">
+            In order to proceed, a registration fee of <strong style="color:#1a1a1a;">{{fee}}</strong> is required. This fee covers the administrative processing of your application and grants you {{benefit}}.
+          </p>
+
+          <!-- Fee callout box -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
+            <tr>
+              <td style="background:#f4f1e8;border:1px solid #d8d2c4;border-left:3px solid #e02424;border-radius:6px;padding:14px 18px;">
+                <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:1px;color:#8a8375;text-transform:uppercase;">Registration Fee</div>
+                <div style="font-family:Georgia,serif;font-size:24px;font-weight:bold;color:#1a1a1a;margin-top:4px;">{{fee}}</div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- P3: Payment -->
+          <p style="margin:0 0 18px;font-size:15px;line-height:1.7;color:#3a362e;">
+            {{paymentMethods}} Once your payment has been received and processed, we will provide you with the comprehensive registration form along with specific instructions for completing the remaining steps.
+          </p>
+
+          <!-- P4: Closing -->
+          <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#3a362e;">
+            Should you have any questions or require additional information, please do not hesitate to contact us. We look forward to assisting you through this process.
+          </p>
+
+          <!-- Sign-off -->
+          <p style="margin:0 0 4px;font-size:15px;line-height:1.7;color:#1a1a1a;">Sincerely,</p>
+          <p style="margin:0 0 2px;font-size:15px;font-weight:bold;color:#1a1a1a;">{{signoffName}}</p>
+          <p style="margin:0 0 2px;font-size:14px;color:#5d574c;">{{organization}}</p>
+
+        </td>
+      </tr>
+    </table>
+
+    <!-- LEGAL / FOOTER -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px;">
+      <tr>
+        <td style="padding:18px 8px;text-align:center;border-top:1px solid #d8d2c4;">
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.7;color:#8a8375;">
+            This communication and any enclosed information is intended solely for the named recipient and may contain confidential or proprietary details. If you are not the intended recipient, please notify the sender and delete this message.
+          </div>
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8a8375;margin-top:10px;">
+            {{organization}}
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+</body>
+</html>
+
