@@ -1,5 +1,11 @@
 const nodemailer = require("nodemailer");
 
+const SCOPES = [
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.settings.basic",
+  "https://www.googleapis.com/auth/gmail.modify",
+];
+
 let cached = { token: null, exp: 0 };
 
 async function accessToken() {
@@ -63,4 +69,4 @@ async function send(message) {
   return { id: json.id, provider: "gmail-api" };
 }
 
-module.exports = { accessToken, send };
+module.exports = { accessToken, send, SCOPES };

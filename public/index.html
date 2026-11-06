@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -55,6 +55,36 @@
       <input id="t-to" required placeholder="fan@example.com">
       <label for="t-subject">Subject</label>
       <input id="t-subject">
+      <div class="ai-draft">
+        <label for="ai-prompt">AI Draft <span class="hint">— describe the email, AI fills the fields</span></label>
+        <div class="ai-row">
+          <input id="ai-prompt" placeholder="e.g. Remind about Saturday Session at The Old Foundry, doors 18:30">
+          <button type="button" id="ai-btn">✨ Draft</button>
+        </div>
+        <div id="ai-status" class="ai-status"></div>
+      </div>
+      <div class="auto-respond">
+        <label>Auto-Respond <span class="hint">— paste an incoming mail, AI picks template + fills + sends</span></label>
+        <div class="auto-row">
+          <input id="ar-from" placeholder="Sender email (e.g. fan@example.com)">
+        </div>
+        <div class="auto-row">
+          <input id="ar-subject" placeholder="Subject (optional)">
+        </div>
+        <textarea id="ar-body" rows="4" placeholder="Paste the incoming email body…"></textarea>
+        <div class="auto-row">
+          <select id="ar-template">
+            <option value="">Auto-detect template</option>
+          </select>
+          <button type="button" id="ar-btn">⚡ Auto-Respond</button>
+        </div>
+        <div id="ar-status" class="ai-status"></div>
+      </div>
+      <div class="reply-section">
+        <h3>Reply to incoming mail</h3>
+        <button type="button" id="fetch-recent">📥 Fetch recent</button>
+        <div id="recent-list" class="recent-list"></div>
+      </div>
       <div id="t-vars"></div>
       <div class="actions">
         <button type="submit" id="t-send">Send</button>

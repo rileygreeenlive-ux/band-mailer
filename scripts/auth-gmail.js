@@ -37,6 +37,7 @@ const REDIRECT = `http://localhost:${PORT}/oauth2callback`;
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.send",
   "https://www.googleapis.com/auth/gmail.settings.basic",
+  "https://www.googleapis.com/auth/gmail.modify",
 ];
 
 const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
@@ -109,12 +110,6 @@ const server = http.createServer(async (req, res) => {
 
   res.end("Done - check the terminal, you can close this tab.");
   server.close();
-});
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  const status = err.statusCode || err.status || 500;
-  res.status(status).json({ error: status >= 500 ? 'internal error' : err.message });
 });
 
 server.listen(PORT, () => {

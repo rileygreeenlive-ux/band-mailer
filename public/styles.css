@@ -1,4 +1,4 @@
-﻿:root { --ink:#1a1a1a; --line:#d8d2c4; --bg:#f4f1e8; --accent:#0d0d0d; }
+:root { --ink:#1a1a1a; --line:#d8d2c4; --bg:#f4f1e8; --accent:#0d0d0d; }
 * { box-sizing:border-box; }
 body { margin:0; font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:var(--bg); }
 
@@ -46,3 +46,32 @@ iframe { width:100%; flex:1; border:0; background:#e9e4d8; }
   iframe { height:70vh; }
   form { border-right:0; }
 }
+
+.ai-draft { margin-top:18px; padding:14px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+.ai-row { display:flex; gap:8px; margin-top:6px; }
+.ai-row input { flex:1; }
+.ai-row button { white-space:nowrap; padding:9px 16px; background:var(--accent); color:#fff; border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+.ai-row button:disabled { opacity:.5; cursor:progress; }
+.ai-status { margin-top:8px; font-size:12px; font-family:ui-monospace,monospace; min-height:18px; }
+
+.auto-respond { margin-top:18px; padding:14px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+.auto-row { display:flex; gap:8px; margin-top:8px; }
+.auto-row input, .auto-row select { flex:1; }
+.auto-row textarea { width:100%; margin-top:8px; }
+.auto-row button { white-space:nowrap; padding:9px 16px; background:var(--accent); color:#fff; border:0; border-radius:6px; font:inherit; font-weight:600; cursor:pointer; }
+.auto-row button:disabled { opacity:.5; cursor:progress; }
+
+.reply-section { margin-top:22px; padding:14px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+.reply-section h3 { margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:.5px; color:#5d574c; }
+#fetch-recent { margin-bottom:12px; }
+.recent-list { display:flex; flex-direction:column; gap:8px; max-height:300px; overflow-y:auto; }
+.recent-item { padding:10px 12px; border:1px solid var(--line); border-radius:6px; background:#faf9f5; }
+.recent-meta { display:flex; justify-content:space-between; font-size:12px; color:#5d574c; }
+.recent-subject { font-weight:600; font-size:13px; margin-top:4px; }
+.recent-body { font-size:12px; color:#777; margin-top:4px; }
+.reply-btn { margin-top:8px; padding:6px 14px; background:var(--accent); color:#fff; border:0; border-radius:5px; font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+.reply-btn:hover { opacity:.85; }
+.flash { animation: flash 1.5s ease; }
+@keyframes flash { 0%,100%{background:#fff} 50%{background:#fff3cd} }
+
+

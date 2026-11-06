@@ -1,4 +1,4 @@
-﻿const $ = (id) => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 const escHtml = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 
 const FIELDS = ["to","cc","bcc","subject","preheader","title","greeting","paragraphs","signatureName","organization"];
@@ -222,6 +222,133 @@ async function boot() {
 
   $("t-to").addEventListener("input", saveTemplateDraft);
   $("t-subject").addEventListener("input", () => { saveTemplateDraft(); templatePreview(); });
+
+  $("ai-btn").addEventListener("click", async () => {
+    const prompt = $("ai-prompt").value.trim();
+    if (!prompt || !currentTemplate) return;
+    $("ai-btn").disabled = true;
+    $("ai-status").textContent = "Drafting…";
+    $("ai-status").className = "ai-status";
+    try {
+      const r = await fetch("/api/ai/draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, templateId: currentTemplate.id }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || r.status);
+      $("t-subject").value = j.subject || currentTemplate.defaultSubject;
+      for (const [key, val] of Object.entries(j.variables)) {
+        const el = $(`var-${key}`);
+        if (el && typeof val === "string") el.value = val;
+      }
+      saveTemplateDraft();
+      templatePreview();
+      $("ai-status").textContent = "✅ Draft ready — review and edit before sending";
+      $("ai-status").className = "ai-status ok";
+    } catch (err) {
+      $("ai-status").textContent = "❌ " + err.message;
+      $("ai-status").className = "ai-status err";
+    } finally {
+      $("ai-btn").disabled = false;
+    }
+  });
+
+  // Populate auto-respond template dropdown
+  const arTpl = $("ar-template");
+  if (arTpl && $("template")) {
+    arTpl.innerHTML = `<option value="">Auto-detect template</option>` +
+      $("template").innerHTML;
+  }
+
+  // Auto-respond
+  $("ar-btn").addEventListener("click", async () => {
+    const from = $("ar-from").value.trim();
+    const body = $("ar-body").value.trim();
+    if (!from || !body) {
+      $("ar-status").textContent = "❌ Sender and body required";
+      $("ar-status").className = "ai-status err";
+      return;
+    }
+    $("ar-btn").disabled = true;
+    $("ar-status").textContent = "⚡ Classifying → extracting → rendering → sending…";
+    $("ar-status").className = "ai-status";
+    try {
+      const r = await fetch("/api/auto-respond", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from,
+          subject: $("ar-subject").value.trim(),
+          body,
+          templateId: $("ar-template").value || undefined,
+          messageId: $("ar-btn").dataset.messageId || undefined,
+          references: $("ar-btn").dataset.references || undefined,
+          gmailMessageId: $("ar-btn").dataset.gmailMessageId || undefined,
+        }),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || r.status);
+      $("ar-status").textContent =
+        `✅ Sent via ${j.provider} — template: ${j.templateId}\n` +
+        `ID: ${j.id}`;
+      $("ar-status").className = "ai-status ok";
+    } catch (err) {
+      $("ar-status").textContent = "❌ " + err.message;
+      $("ar-status").className = "ai-status err";
+    } finally {
+      $("ar-btn").disabled = false;
+    }
+  });
+
+  // Fetch recent Gmail messages
+  $("fetch-recent").addEventListener("click", async () => {
+    const list = $("recent-list");
+    list.innerHTML = '<div class="ai-status">Fetching…</div>';
+    try {
+      const r = await fetch("/api/gmail/recent?n=10");
+      const msgs = await r.json();
+      if (!r.ok) throw new Error(msgs.error || r.status);
+      if (!msgs.length) {
+        list.innerHTML = '<div class="ai-status">No recent messages found.</div>';
+        return;
+      }
+      list.innerHTML = msgs.map(m => `
+        <div class="recent-item" data-id="${m.id}" data-thread="${m.threadId}"
+             data-from="${escHtml(m.from)}" data-subject="${escHtml(m.subject)}"
+             data-messageid="${escHtml(m.messageId)}" data-references="${escHtml(m.references)}"
+             data-body="${escHtml(m.body)}">
+          <div class="recent-meta">
+            <strong>${escHtml(m.from)}</strong>
+            <span class="recent-date">${escHtml(m.date)}</span>
+          </div>
+          <div class="recent-subject">${escHtml(m.subject)}</div>
+          <div class="recent-body">${escHtml(m.body.slice(0, 120))}…</div>
+          <button type="button" class="reply-btn">⚡ Reply</button>
+        </div>
+      `).join("");
+
+      list.querySelectorAll(".reply-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const item = btn.closest(".recent-item");
+          $("ar-from").value = item.dataset.from;
+          $("ar-subject").value = item.dataset.subject;
+          $("ar-body").value = item.dataset.body;
+          // Store messageId + references + gmailMessageId for the reply
+          item.dataset._used = "1";
+          $("ar-btn").dataset.messageId = item.dataset.messageid;
+          $("ar-btn").dataset.references = item.dataset.references;
+          $("ar-btn").dataset.gmailMessageId = item.dataset.id;
+          // Scroll to auto-respond and flash it
+          document.querySelector(".auto-respond").scrollIntoView({ behavior: "smooth" });
+          document.querySelector(".auto-respond").classList.add("flash");
+          setTimeout(() => document.querySelector(".auto-respond").classList.remove("flash"), 1500);
+        });
+      });
+    } catch (e) {
+      list.innerHTML = `<div class="ai-status err">❌ ${escHtml(e.message)}</div>`;
+    }
+  });
 
   // Mode toggle
   $("mode-free").addEventListener("click", () => switchMode("free"));

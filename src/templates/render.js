@@ -70,4 +70,9 @@ function parseRecipients(to) {
   return recipients;
 }
 
-module.exports = { list, render, validate, parseRecipients };
+function readMeta(templateId) {
+  const p = path.join(DIR, templateId, "meta.json");
+  return JSON.parse(fs.readFileSync(p, "utf8"));
+}
+
+module.exports = { list, render, validate, parseRecipients, readMeta };
